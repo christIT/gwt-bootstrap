@@ -15,9 +15,7 @@
  */
 package com.github.gwtbootstrap.client.ui.resources;
 
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.HeadElement;
-import com.google.gwt.dom.client.ScriptElement;
+import com.google.gwt.dom.client.*;
 
 /**
  * Methods to inject JavaScript code into the document header.
@@ -37,7 +35,21 @@ public class JavaScriptInjector extends AbstractInjector {
 	 *            the JavaScript code
 	 */
 	public static void inject(String javascript) {
+		if (javascript == null || javascript.isEmpty()) {
+			return;
+		}
+
 		HeadElement head = getHead();
+
+		for (int i = 0; i < head.getChildCount(); i++) {
+			Node child = head.getChild(i);
+			Element tEl = Element.as(child);
+
+			if ("SCRIPT".equalsIgnoreCase(tEl.getTagName()) && javascript.equalsIgnoreCase(tEl.getInnerHTML())) {
+				return;
+			}
+		}
+
 		ScriptElement element = createScriptElement();
 		element.setText(javascript);
 		head.appendChild(element);
