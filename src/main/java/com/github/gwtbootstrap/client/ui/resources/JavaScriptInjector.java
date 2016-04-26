@@ -42,11 +42,17 @@ public class JavaScriptInjector extends AbstractInjector {
 		HeadElement head = getHead();
 
 		for (int i = 0; i < head.getChildCount(); i++) {
-			Node child = head.getChild(i);
-			Element tEl = Element.as(child);
+			try {
+				Node child = head.getChild(i);
+				if(child instanceof Element) {
+					Element tEl = (Element) child;
 
-			if ("SCRIPT".equalsIgnoreCase(tEl.getTagName()) && javascript.equalsIgnoreCase(tEl.getInnerHTML())) {
-				return;
+					if ("SCRIPT".equalsIgnoreCase(tEl.getTagName()) && javascript.equalsIgnoreCase(tEl.getInnerHTML())) {
+						return;
+					}
+				}
+			} catch (Exception ex) {
+				// nop
 			}
 		}
 
